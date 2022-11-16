@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_secrete_token_view" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.secret.token</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='integration']" position="inside">
+                <div class="col-12 o_setting_box">
+                    <group>
+                        <field name="secret_token" string="MyOperator Secret Token"/>
+                    </group>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <data noupdate="1">
+        <record id="secret_token_configuration" model="ir.config_parameter">
+            <field name="key">odoo_myoperator_integration.secret_token</field>
+            <field name="value">664d64a398853dd51b7637f9ee3890960ce1bf5468f84c96c4bc6a136e832b67</field>
+        </record>
+    </data>
+</odoo>

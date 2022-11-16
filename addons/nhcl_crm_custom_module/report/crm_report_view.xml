@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_report_crm" model="ir.actions.report">
+            <field name="name">CRM</field>
+            <field name="model">crm.lead</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">nhcl_crm_custom_module.report_crm_lead</field>
+            <field name="report_file">nhcl_crm_custom_module.report_crm_lead</field>
+            <field name="print_report_name">'CRM - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="model_crm_lead"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>
