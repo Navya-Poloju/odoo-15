@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="knowlarity_webhook_pivot_view" model="ir.ui.view">
+        <field name="name">knowlarity.webhook.view.pivot</field>
+        <field name="model">knowlarity.webhook</field>
+        <field name="arch" type="xml">
+            <pivot string="Knowlarity Webhook Analysis" sample="1">
+                <field name="create_date" interval="month" type="row"/>
+                <field name="agent_phone_number" type="col"/>
+                <field name="cust_phone_number" type="col"/>
+                <field name="call_duration" type="col"/>
+                <field name="log_event" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="knowlarity_webhook_view_pivot_forecast" model="ir.ui.view">
+        <field name="name">knowlarity.webhook.view.pivot.forecast</field>
+        <field name="model">knowlarity.webhook</field>
+        <field name="priority">32</field>
+        <field name="arch" type="xml">
+            <pivot string="Knowlarity Webhook Forecast Analysis" sample="1" js_class="forecast_pivot">
+                <field name="create_date" interval="month" type="row"/>
+                <field name="agent_phone_number" type="col"/>
+                <field name="cust_phone_number" type="col"/>
+                <field name="call_duration" type="measure"/>
+                <field name="log_event" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="knowlarity_webhook_form_view" model="ir.ui.view">
+        <field name="name">knowlarity.webhook.form</field>
+        <field name="model">knowlarity.webhook</field>
+        <field name="arch" type="xml">
+            <form string="Knowlarity Webhook form" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="agent_phone_number" readonly="1" force_save="1"/>
+                            <field name="cust_phone_number" readonly="1" force_save="1"/>
+                            <field name="call_duration" readonly="1" force_save="1"/>
+                            <field name="caller_id" string="Caller Id" readonly="1" force_save="1"/>
+                        </group>
+                        <group>
+                            <field name="log_event" readonly="1" force_save="1"/>
+                            <field name="log_status" readonly="1" force_save="1"/>
+                            <field name="call_uid" readonly="1" force_save="1"/>
+                            <field name="call_record_url" widget="url" readonly="1" force_save="1"/>
+                            <field name="create_date" readonly="1" force_save="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="knowlarity_webhook_tree_view" model="ir.ui.view">
+        <field name="name">knowlarity.webhook.tree</field>
+        <field name="model">knowlarity.webhook</field>
+        <field name="arch" type="xml">
+            <tree create="false">
+                <field name="create_date"/>
+                <field name="agent_phone_number"/>
+                <field name="cust_phone_number"/>
+                <field name="log_event"/>
+                <field name="log_status"/>
+                <field name="call_uid"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_knowlarity_webhook_form">
+        <field name="name">Knowlarity Webhook Forms</field>
+        <field name="res_model">knowlarity.webhook</field>
+        <field name="view_mode">tree,form,pivot</field>
+        <field name="view_id" ref="knowlarity_webhook_tree_view"/>
+        <field name="help" type="html">
+            <p></p>
+        </field>
+    </record>
+
+    <menuitem id="menu_knowlarity_webhook_form"
+              name="Webhook Logs"
+              parent="crm.crm_menu_root"
+              sequence="2"
+              action="action_knowlarity_webhook_form"/>
+
+</odoo>

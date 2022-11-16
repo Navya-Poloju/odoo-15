@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_secrete_token_view" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.secret.token</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='integration']" position="inside">
+                <div class="col-12 o_setting_box">
+                    <group>
+                        <field name="kowlarity_authorization_token" string="Knowlarity Secret Token"/>
+                    </group>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <data noupdate="1">
+        <record id="secret_token_configuration" model="ir.config_parameter">
+            <field name="key">odoo_knowlarity_integration.knowlarity_authorization_token</field>
+            <field name="value">ab8b7892-7645-4810-9c12-b4c7ba5547d9</field>
+        </record>
+    </data>
+</odoo>

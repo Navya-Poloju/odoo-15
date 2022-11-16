@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="whatsapp_message_wizard_form" model="ir.ui.view">
+            <field name="name">knowlarity.call.wizard.form.inherit</field>
+            <field name="model">knowlarity.call.wizard</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Knowlarity Operator">
+                    <group>
+                        <group>
+                            <field name="user_id" string="Select User"/>
+                            <field name="mobile" string="Number"/>
+                        </group>
+                        <field name="model" invisible="1"/>
+                        <group>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="make_call" string="Call" type="object"/>
+                        <button name="cancel" string="Cancel" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
