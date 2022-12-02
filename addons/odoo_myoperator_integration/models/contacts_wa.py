@@ -1,8 +1,10 @@
-from odoo import _, models
+from odoo import _, models,fields
 
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
+
+    myoperator_user_id = fields.Char("MyOperator User Id")
 
     def contacts_whatsapp(self):
         partner_id = self.env['res.users'].search([('id', '=', self.env.uid)]).partner_id

@@ -1,8 +1,8 @@
 import requests
 from odoo import api, fields, models,_
 import requests, json
-from odoo.exceptions import AccessDenied, ValidationError, UserError
 import html2text
+from odoo.exceptions import UserError
 from odoo.tools import html_escape
 import logging
 _logger = logging.getLogger(__name__)
@@ -65,18 +65,17 @@ class WhatsappSendMessage(models.TransientModel):
             url = 'https://obd-api.myoperator.co/obd-api-v1'
             get_param = self.env['ir.config_parameter'].sudo().get_param
             myobj = {
-                        "company_id": "63036af247aa9906",
-                        "secret_token": get_param('odoo_myoperator_integration.secret_token'),
-                        "type": "1",
-                        "number": self.user_id.phone or self.user_id.mobile, # Sale User Phone Number
-                        "number_2": self.mobile, # Customer Phone Number
-                        "public_ivr_id": "6307261c5d66f481",
-                        "reference_id": "nhcl1234",
-                        "region": "test",
-                        "caller_id": "test",
-                        "group" : "test"
-
-                     }
+                "company_id": "63036af247aa9906",
+                "secret_token": get_param('odoo_myoperator_integration.secret_token'),
+                "type": "1",
+		        "user_id": self.user_id.myoperator_user_id,
+                "number": self.user_id.phone or self.user_id.mobile,  # call agent first
+                "public_ivr_id": "6307261c5d66f481",
+                "reference_id": "1245",
+                "region": "test",
+                "caller_id": "test",
+                "group": "test"
+            }
             response = requests.post(url, json=myobj, headers=headers)
             sale_user = self.user_id.name
             if self.crm_lead_id:
@@ -90,20 +89,22 @@ class WhatsappSendMessage(models.TransientModel):
                 "%(sale_user)s call to %(customer)s<br/>"
                 "%(sale_user_phone_no)s -> %(customer_phone_no)s<br/>"
                 "At Time -> %(time)s<br/>"
-                , sale_user=sale_user,customer=customer,sale_user_phone_no=sale_user_phone_no,customer_phone_no=customer_phone_no,time=time)
+                , sale_user=sale_user, customer=customer, sale_user_phone_no=sale_user_phone_no,
+                customer_phone_no=customer_phone_no, time=time)
             if self.crm_lead_id:
                 self.crm_lead_id.message_post(body=body)
                 if not self.crm_lead_id.partner_id:
-                    raise UserError(_("Please select CRM Partner"))
+                    raise UserError(_("Please Select CRM Partner"))
                 self.crm_lead_id.partner_id.message_post(body=body)
             else:
                 self.partner_id.message_post(body=body)
             view_id = self.env.ref('odoo_myoperator_integration.sh_message_wizard').id
             context = dict(self._context or {})
             if response.status_code != 200:
-                context['message'] = "something went wrong, please contact your admin"
+                context['message'] = "VoIP call provider returned an error. Please contact your system Adminstrator"
+                _logger.info("VoIP error code and response = ",response.status_code,response.content)
             else:
-                context['message'] = "Please Wait we are try to connect call"
+                context['message'] = "Please Wait while we try to connect your VoIP call"
                 phonecall_activity_type = self.env.ref('mail.mail_activity_data_call', raise_if_not_found=False)
                 if not phonecall_activity_type:
                     phonecall_activity_type = self.env['mail.activity.type'].search([('category', '=', 'phonecall')],
@@ -114,7 +115,7 @@ class WhatsappSendMessage(models.TransientModel):
                                                                                         limit=1)
                         if phonecall_activity_type:
                             _logger.warning(
-                                "No phonecall activity type found. MyOperator activities aren't guaranteed to work as expected. Fallback on %s",
+                                "Phonecall activity type found. MyOperator activities aren't guaranteed to work as expected. Fallback on %s",
                                 phonecall_activity_type.name)
                         else:
                             _logger.warning(
@@ -128,10 +129,10 @@ class WhatsappSendMessage(models.TransientModel):
                     'date_deadline': fields.Date.today(self),
                 } for record in self]
                 activities = self.env['mail.activity'].sudo().create(values_list)
-
+            _logger.info("%s" %  context['message'])
             return {
                 'type': 'ir.actions.act_window',
-                'name': ('Response'),
+                'name': ('VoIP provider'),
                 'view_mode': 'form',
                 'res_model': 'sh.message.wizard',
                 'target': 'new',
