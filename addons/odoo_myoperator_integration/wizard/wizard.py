@@ -69,7 +69,7 @@ class WhatsappSendMessage(models.TransientModel):
                 "secret_token": get_param('odoo_myoperator_integration.secret_token'),
                 "type": "1",
 		        "user_id": self.user_id.myoperator_user_id,
-                "number": self.user_id.phone or self.user_id.mobile,  # call agent first
+                "number": self.mobile,  # Customer Phone Number
                 "public_ivr_id": "6307261c5d66f481",
                 "reference_id": "1245",
                 "region": "test",
