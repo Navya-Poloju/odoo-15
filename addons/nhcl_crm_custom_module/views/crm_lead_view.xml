@@ -1,52 +1,72 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-        <record id="custom_crm_form_view" model="ir.ui.view">
-            <field name="name">custom.crm.form.view</field>
-            <field name="model">crm.lead</field>
-            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//page[@name='lead']" position="after">
-<!--                    <page string="Criteria" name="criteria">-->
-<!--                        <group>-->
-<!--                            <group>-->
-<!--                                <field name="no_contact_reason" attrs="{'readonly':[('state_id','not in',['No Contact','NEW'])]}"/>-->
-<!--                                <field name="unqualified_reason" attrs="{'readonly':[('state_id','!=','Unqualified')]}"/>-->
-<!--                                <field name="lost_reason" attrs="{'readonly':[('state_id','!=','Lost Reason')]}"/>-->
-<!--                            </group>-->
-<!--                            <group>-->
-<!--                            </group>-->
-<!--                        </group>-->
-<!--                    </page>-->
-                    <page string="Other Information" name="other_information">
+    <record id="custom_crm_form_view" model="ir.ui.view">
+        <field name="name">custom.crm.form.view</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='lead']" position="after">
+                <!--                    <page string="Criteria" name="criteria">-->
+                <!--                        <group>-->
+                <!--                            <group>-->
+                <!--                                <field name="no_contact_reason" attrs="{'readonly':[('state_id','not in',['No Contact','NEW'])]}"/>-->
+                <!--                                <field name="unqualified_reason" attrs="{'readonly':[('state_id','!=','Unqualified')]}"/>-->
+                <!--                                <field name="lost_reason" attrs="{'readonly':[('state_id','!=','Lost Reason')]}"/>-->
+                <!--                            </group>-->
+                <!--                            <group>-->
+                <!--                            </group>-->
+                <!--                        </group>-->
+                <!--                    </page>-->
+                <page string="Other Information" name="other_information">
+                    <group>
                         <group>
-                            <group>
-                                <field name="last_name"/>
-                                <field name="product_id"/>
-                                <field name="project_id"/>
-                                <field name="salutation"/>
-                                <field name="lead_status"/>
-                                <field name="phone_country"/>
-                                <field name="secondary_phone"/>
-                                <field name="secondary_email"/>
-                                <field name="location"/>
-                                <field name="last_note_by_presales"/>
-                                <field name="system_tags"/>
-                            </group>
-                            <group>
-                                <field name="source"/>
-                                <field name="sub_source"/>
-                                <field name="received_on"/>
-                                <field name="region"/>
-                                <field name="nri_type"/>
-                                <field name="last_sales_contacted_on"/>
-                                <field name="last_sales_contact_attempted_on"/>
-                                <field name="site_visit_status"/>
-                                <field name="last_note_by_sales"/>
-                                <field name="lead_hotness"/>
-                            </group>
+                            <field name="last_name"/>
+                            <field name="product_id"/>
+                            <field name="project_id"/>
+                            <field name="salutation"/>
+                            <field name="lead_status"/>
+                            <field name="sub_stage_id"/>
+                            <field name="phone_country"/>
+                            <field name="secondary_phone"/>
+                            <field name="secondary_email"/>
+                            <field name="location"/>
+                            <field name="last_note_by_presales"/>
+                            <field name="system_tags"/>
                         </group>
-                    </page>
-                </xpath>
-            </field>
-        </record>
+                        <group>
+                            <field name="source"/>
+                            <field name="sub_source"/>
+                            <field name="received_on"/>
+                            <field name="region"/>
+                            <field name="nri_type"/>
+                            <field name="last_sales_contacted_on"/>
+                            <field name="last_sales_contact_attempted_on"/>
+                            <field name="site_visit_status"/>
+                            <field name="last_note_by_sales"/>
+                            <field name="lead_hotness"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="custom_crm_stage_form_view" model="ir.ui.view">
+        <field name="name">custom.crm.stage.form.view</field>
+        <field name="model">crm.stage</field>
+        <field name="inherit_id" ref="crm.crm_stage_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='requirements']" position="after">
+                <notebook>
+                <page string="Sub Stages" name="sub_stages">
+                    <field name="sub_stages">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                        </tree>
+                    </field>
+                </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
 </odoo>

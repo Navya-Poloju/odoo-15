@@ -59,6 +59,9 @@ class Lead(models.Model):
     lead_hotness = fields.Integer('Lead Hotness')
     last_name = fields.Char('Last Name')
     first_name = fields.Char('First Name')
+    sub_stage_id = fields.Many2one('sub.stage',string="Sub Stage")
+    lead_stage = fields.Char('Lead Sub Stage')
+    attended_by = fields.Char('Attended By')
 
     def crm_lead_action(self):
         records = self.env['crm.lead'].search([('description', '!=', False)])
@@ -101,6 +104,94 @@ class Lead(models.Model):
                     convert.action_apply()
                     leads.queue[0].write({'user_id': sale_user_ids[j]})
                     leads.get()
+    # @api.model
+    # def create(self,vals):
+    #     res = super(Lead,self).create(vals)
+    #     if res:
+    #         for rec in res:
+    #             partner_id = self.env['res.partner']
+    #             name = rec.first_name
+    #             if rec.first_name:
+    #                 if rec.email_from and rec.email_from != 'N/A' and rec.phone:
+    #                     partner_id = self.env['res.partner'].search([('email', '=', rec.email_from), ('phone', '=', rec.phone)])
+    #                 elif rec.phone:
+    #                     partner_id = self.env['res.partner'].search([('phone', '=', rec.phone)])
+    #                 if rec.last_name and rec.last_name != 'N/A':
+    #                     name = rec.first_name + ' ' + rec.last_name
+    #             if rec.name:
+    #                 rec.write({'name': ''})
+    #             rec.write({'name': name})
+    #             if "Book" in rec.lead_stage:
+    #                 stage_id = self.env['crm.stage'].search([('name', '=', "Booking Done")])
+    #                 rec.write({'stage_id': stage_id.id})
+    #             if "Blocked" in rec.lead_stage:
+    #                 stage_id = self.env['crm.stage'].search([('name', '=', "Booking Done")])
+    #                 if stage_id:
+    #                     sub_stages = stage_id.sub_stages
+    #                     if sub_stages:
+    #                         sub_stage_id = sub_stages[1]
+    #                         rec.write({'stage_id': stage_id.id, 'sub_stage_id': sub_stage_id})
+    #             if "Expected" in rec.lead_stage:
+    #                 stage_id = self.env['crm.stage'].search([('name', '=', "Opportunity")])
+    #                 if stage_id:
+    #                     sub_stages = stage_id.sub_stages
+    #                     if sub_stages:
+    #                         sub_stage_id = sub_stages[1]
+    #                         rec.write({'stage_id': stage_id.id, 'sub_stage_id': sub_stage_id})
+    #             if "Opportunity" in rec.lead_stage:
+    #                 stage_id = self.env['crm.stage'].search([('name', '=', "Opportunity")])
+    #                 if rec.lead_stage == "Opportunity No Response":
+    #                     sub_stages = stage_id.sub_stages
+    #                     if sub_stages:
+    #                         rec.write({'stage_id': stage_id.id, 'sub_stage_id': sub_stages[2]})
+    #                 else:
+    #                     rec.write({'stage_id': stage_id.id})
+    #             if "Prospect" in rec.lead_stage:
+    #                 stage_id = self.env['crm.stage'].search([('name', '=', "Opportunity")])
+    #                 rec.write({'stage_id': stage_id.id})
+    #             if "Inactive" in rec.lead_stage:
+    #                 stage_id = self.env['crm.stage'].search([('name', '=', "Unqualified")])
+    #                 rec.write({'stage_id': stage_id.id})
+    #             if rec.lead_stage == "Lead" or rec.lead_stage == "New Lead":
+    #                 stage_id = self.env['crm.stage'].search([('name', '=', "New")])
+    #                 rec.write({'stage_id': stage_id.id})
+    #             if "Lead Call Back Later" in rec.lead_stage:
+    #                 stage_id = self.env['crm.stage'].search([('name', '=', "Contacted")])
+    #                 if stage_id:
+    #                     sub_stages = stage_id.sub_stages
+    #                     if sub_stages:
+    #                         sub_stage_id = sub_stages[1]
+    #                         rec.write({'stage_id': stage_id.id, 'sub_stage_id': sub_stage_id})
+    #             if "Lost" in rec.lead_stage:
+    #                 stage_id = self.env['crm.stage'].search([('name', '=', "Unqualified")])
+    #                 if stage_id:
+    #                     sub_stages = stage_id.sub_stages
+    #                     if sub_stages:
+    #                         rec.write({'stage_id': stage_id.id, 'sub_stage_id': sub_stages[3]})
+    #             if "Unqualified" in rec.lead_stage:
+    #                 stage_id = self.env['crm.stage'].search([('name', '=', "Unqualified")])
+    #                 rec.write({'stage_id': stage_id.id})
+    #             if rec.lead_stage == "No Response":
+    #                 stage_id = self.env['crm.stage'].search([('name', '=', "Contacted")])
+    #                 if stage_id:
+    #                     sub_stage_id = stage_id.sub_stages
+    #                     if sub_stage_id:
+    #                         rec.write({'stage_id': stage_id.id, 'sub_stage_id': sub_stage_id[0]})
+    #
+    #             if partner_id and rec.last_name and rec.last_name != 'N/A' and rec.last_name not in partner_id.name:
+    #                 partner_id.write({'name': partner_id.name + ' ' + rec.last_name})
+    #             if partner_id and rec:
+    #                 rec.write({'partner_id': partner_id.id})
+    #             if rec.date:
+    #                 self.env.cr.execute("UPDATE crm_lead set create_date = '%s' WHERE id=%s" % (rec.date, rec.id))
+    #             if rec.prev_user_id and rec.prev_user_id != False:
+    #                 rec.write({'create_uid': rec.prev_user_id.id})
+    #             if rec.attended_by:
+    #                 user_id = self.env['res.users'].search([('name', '=', rec.attended_by)])
+    #                 if user_id:
+    #                     rec.write({'user_id': user_id.id})
+    #
+    #     return res
 
     # @api.onchange('stage_id')
     # def _onchange_stage_id(self):
@@ -120,3 +211,12 @@ class Lead(models.Model):
     #                                          default_selection_type=selection_type)
     #             msg = _('Please Select Reason for stage change.')
     #             raise RedirectWarning(msg, action, _('Select'))
+class Stage(models.Model):
+    _inherit = "crm.stage"
+
+    sub_stages = fields.One2many('sub.stage','stage_id')
+class Substages(models.Model):
+    _name = 'sub.stage'
+
+    stage_id = fields.Many2one('crm.stage',string="Stage")
+    name = fields.Char('Stage')
